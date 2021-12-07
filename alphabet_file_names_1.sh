@@ -67,5 +67,4 @@ do
 	echo $word > $word.txt || { echo "ERR: can't write to $word.txt"; exit 6; }
 done
 
-
-echo "Test script done"
+echo "alphabet_filenames ver. 1 script done"

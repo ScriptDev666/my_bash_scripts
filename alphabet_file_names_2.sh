@@ -1,57 +1,66 @@
 #!/bin/bash
 
-#cd /var/www/scripts
-#rm test_out.txt
-#touch test_out.txt
+pathto="/var/www/site1/"
+[ -d "$pathto" ] || { echo "ERR: $pathto not exist"; exit 1; } #directory existance check
+cd $pathto
 
-#cd /var/www/scripts
-#echo -n > test_out.txt || { echo 'ERR: echo -n > $file'; exit 1; } #создание файла в нужной директории c выводом ошибки в случае неуспешного выполнения команды
+noteCount=0 #counter declaration
 
-TMP_DIR='/var/www/scripts'
-TMP_FILENAME='test_out.txt'
-TMP_FILE="$TMP_DIR/$TMP_FILENAME" #присвоение файлу стандартного имени и пути
-
-[ -d "$TMP_DIR" ] || { echo "ERR: $TMP_DIR not exist"; exit 1; } #проверка директории на существование
-cd "$TMP_DIR" #переход в директорию
-
-rm $TMP_FILE || { echo "ERR: can't reset $TMP_FILE"; exit 2; }
-touch $TMP_FILE || { echo "ERR: can't recreate $TMP_FILE"; exit 3; } #TMP_FILE reset with error checking with exit-codes
-
-note=0 #counter declaration
-
-for lit1 in {a..z}
-do
-	for lit2 in {a..z}
-	do
-		echo "$lit1$lit2" >> $TMP_FILE
-		let note++
-	done
-	for Lit1 in {A..Z}
-	do
-		echo "$lit1$Lit1" >> $TMP_FILE
-		let note++
-	done
+for note in {a..z}{a..z}
+do		
+	touch $note.txt || { echo "ERR: can't create $note.txt"; exit 2; } #file $note.txt creation with error-checking
+	echo $note > $note.txt || { echo "ERR: can't write to file $note.txt"; exit 3; } #write to file $note.txt with error checking
+	let noteCount++
 done
-for Lit1 in {A..Z}
-do
-	for lit1 in {a..z}
-	do	
-		echo "$Lit1$lit1" >> $TMP_FILE
-		let note++
-	done
-	for Lit2 in {A..Z}
-	do	
-		echo "$Lit1$Lit2" >> $TMP_FILE
-		let note++
-	done
-done #два цикла для задания корректных имен
 
-echo "$note notes done"
-if [ $note = 2704 ];
+for note in {a..z}{A..Z}
+do		
+	touch $note.txt || { echo "ERR: can't create $note.txt"; exit 4; } #file $note.txt creation with error-checking
+	echo $note > $note.txt || { echo "ERR: can't write to file $note.txt"; exit 5; } #write to file $note.txt with error checking
+	let noteCount++
+done
+
+for note in {A..Z}{a..z}
+do		
+	touch $note.txt || { echo "ERR: can't create $note.txt"; exit 6; } #file $note.txt creation with error-checking
+	echo $note > $note.txt || { echo "ERR: can't write to file $note.txt"; exit 7; } #write to file $note.txt with error checking
+	let noteCount++
+done
+
+for note in {A..Z}{A..Z}
+do		
+	touch $note.txt || { echo "ERR: can't create $note.txt"; exit 8; } #file $note.txt creation with error-checking
+	echo $note > $note.txt || { echo "ERR: can't write to file $note.txt"; exit 9; } #write to file $note.txt with error checking
+	let noteCount++
+done
+
+echo "$noteCount notes done"
+if [ $noteCount = 2704 ];
 then
 	echo "Notes count as expected"
+else
+	echo "ERR: wrong lines count"
+	exit 10 #stop script execution if ERR
 fi #counter check
 
-wc -l $TMP_FILENAME #lines count output to check script run correct (wc -l $TMP_FILE output must be equal to $note)
+for note in {a..z}{a..z}
+do	
+	[ -s $note.txt ] || { echo "ERR: empty file $note.txt"; exit 11; }
+done
 
-echo "Test script done"
+for note in {a..z}{A..Z}
+do	
+	[ -s $note.txt ] || { echo "ERR: empty file $note.txt"; exit 12; }
+done
+
+for note in {A..Z}{a..z}
+do	
+	[ -s $note.txt ] || { echo "ERR: empty file $note.txt"; exit 13; }
+done
+
+for note in {A..Z}{A..Z}
+do	
+	[ -s $note.txt ] || { echo "ERR: empty file $note.txt"; exit 14; }
+done	#stop script execution if there is an empty file
+
+echo "alphabet_filenames ver. 2 script done"
